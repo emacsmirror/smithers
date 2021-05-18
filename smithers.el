@@ -1,4 +1,4 @@
-;;; smithers.el --- Mr Smithers' startup message of Burns
+;;; smithers.el --- Mr Smithers' startup message of Burns -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021 Mehmet Tekman <mtekman89@gmail.com>
 
