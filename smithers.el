@@ -27,32 +27,34 @@
                                       (expand-file-name (format "%s.wav" speechkey)
                                                         dir-wavs))
                               nil 0))
-   
+
 
 
 (defun get-text-contents (ascii-key &optional lpad)
   "Retrieve the text contents of 'ascii/ASCII-KEY.txt' and add
   LPAD left-padding of spaces to each line (default: nil)."
-  (let ((fname (expand-file-name (format "%s.txt" ascii-key) dir-ascii))
-        (rstring nil))
+  (let ((fname (expand-file-name (format "%s.txt" ascii-key) dir-ascii)))
     (if (file-exists-p fname)
         (with-temp-buffer
           (insert-file-contents fname)
           (if lpad
               ;; Insert vertical column
-              (replace-rectangle (point-min)
-                                 (progn (point-max) (line-beginning-position))
+              (replace-rectangle (point-min) (point-max)
                                  (make-string lpad ? )))
-          (setq rstring
-                (buffer-substring-no-properties
-                 (point-min) (point-max)))))))
+          (buffer-substring-no-properties
+           (point-min) (point-max))))))
 
 
 (setq sound-alist
-      '((hello . "he@'ll',u:") (smithers . "smi,D3:ss")
-        (youre . "juor") (quite . "kwaIt") (good . "gU@d")
-        (at . "ad" ) (turning . "d3::nI2N")
-        (me . "mi:::") (on . "A@:n")))
+      '((hello "he@'ll',u:")
+        (smithers "smi,D3:ss")
+        (youre "juor")
+        (quite "kwaIt")
+        (good "gU@d")
+        (at "ad")
+        (turning "d3::nI2N")
+        (me "mi:::")
+        (on "A@:n")))
 
 (setq audiodelay 5)
 
@@ -70,51 +72,123 @@
     (:ascii closed :duration ,(- 08 audiodelay))
     ;; Talking Sequence
     (:espeak hello :duration 10)
-    (:ascii opened :duration 11 :text (1 01 "Hel"))
-    (:ascii closed :duration ,(- 06 audiodelay) :text (1 03 "lo"))
+    (:ascii opened :duration 11 :text (15 46 "
+┬ ┬┌─┐┬
+├─┤├┤ │
+┴ ┴└─┘┴─┘" t))
+    (:ascii closed :duration ,(- 06 audiodelay) :text (24 46 "
+┬  ┌─┐
+│  │ │
+┴─┘└─┘"))
     (:espeak smithers :duration ,audiodelay)
-    (:ascii opened :duration 10 :text (1 06 "Smi"))
-    (:ascii closed :duration ,(- 16 audiodelay) :text (1 09 "thers"))
+    (:ascii opened :duration 10 :text (32 46 "
+┌─┐┌┬┐┬
+└─┐││││
+└─┘┴ ┴┴"))
+    (:ascii closed :duration ,(- 16 audiodelay) :text (39 46 "
+┌┬┐┬ ┬┌─┐┬─┐┌─┐
+ │ ├─┤├┤ ├┬┘└─┐
+ ┴ ┴ ┴└─┘┴└─└─┘"))
     (:espeak youre :duration ,audiodelay)
-    (:ascii opened :duration 06 :text (2 01 "You"))
-    (:ascii closed :duration ,(- 04 audiodelay) :text (2 04 "'re"))
+    (:ascii opened :duration 06 :text (21 52 "
+┬ ┬┌─┐┬ ┬
+└┬┘│ ││ │
+ ┴ └─┘└─┘"))
+    (:ascii closed :duration ,(- 04 audiodelay) :text (30 52 "
+|┬─┐┌─┐
+ ├┬┘├┤
+ ┴└─└─┘"))
     (:espeak quite :duration ,audiodelay)
-    (:ascii opened :duration 06 :text (2 08 "Qui") )
-    (:ascii closed :duration ,(- 06 audiodelay) :text (2 11 "te"))
+    (:ascii opened :duration 06 :text (40 52 "
+┌─┐ ┬ ┬┬
+│─┼┐│ ││
+└─┘└└─┘┴"))
+    (:ascii closed :duration ,(- 06 audiodelay) :text (48 52 "
+┌┬┐┌─┐
+ │ ├┤
+ ┴ └─┘"))
     (:espeak good :duration ,audiodelay)
-    (:ascii opened :duration 10 :text (2 15 "Go") )
-    (:ascii closed :duration ,(- 08 audiodelay) :text (2 17 "od"))
+    (:ascii opened :duration 10 :text (33 58 "
+┌─┐┌─┐
+│ ┬│ │
+└─┘└─┘") )
+    (:ascii closed :duration ,(- 08 audiodelay) :text (39 58 "
+┌─┐┌┬┐
+│ │ ││
+└─┘─┴┘"))
     (:espeak at :duration ,audiodelay)
-    (:ascii opened :duration 08 :text (3 01 "a") )
-    (:ascii closed :duration ,(- 06 audiodelay) :text (3 02 "t"))
+    (:ascii opened :duration 08 :text (48 58 "
+┌─┐
+├─┤
+┴ ┴"))
+    (:ascii closed :duration ,(- 06 audiodelay) :text (51 58 "
+┌┬┐
+ │
+ ┴"))
     (:espeak turning :duration ,audiodelay)
-    (:ascii opened :duration 11 :text (3 05 "turn") )
-    (:ascii closed :duration ,(- 06 audiodelay) :text (3 09 "ing"))
+    (:ascii opened :duration 11 :text (15 64 "
+┌┬┐┬ ┬┬─┐┌┐┌
+ │ │ │├┬┘│││
+ ┴ └─┘┴└-┘└┘") )
+    (:ascii closed :duration ,(- 06 audiodelay) :text (27 64 "
+-┬-┌┐┌┌─┐
+ │ ││││ ┬
+ ┴ ┘└┘└─┘"))
     (:espeak me :duration ,audiodelay)
-    (:ascii opened :duration 06 :text (3 14 "m") )
-    (:ascii closed :duration ,(- 06 audiodelay) :text (3 15 "e"))
+    (:ascii opened :duration 06 :text (39 64 "
+┌┬┐
+│││
+┴ ┴") )
+    (:ascii closed :duration ,(- 06 audiodelay) :text (42 64 "
+┌─┐
+├┤
+└─┘"))
     (:espeak on :duration ,audiodelay)
-    (:ascii opened :duration 10 :text (3 18 "o") )
-    (:ascii closed :duration 24 :text (3 19 "n"))
+    (:ascii opened :duration 10 :text (48 64 "
+┌─┐
+│ │
+└─┘"))
+    (:ascii closed :duration 24 :text (51 64 "
+┌┐┌
+│││
+┘└┘"))
     ;; Winky wink
-    (:ascii winked :duration 16)
-    (:ascii closed :duration 7)))
+    (:ascii winked :duration 16 :text (1 1 ""))
+    (:ascii closed :duration 7 :text (1 1 " "))
+    ))
 ;;  "Timings as derived as 'ticks' from the source video.")
 
+(setq active-text nil
+      backlen 50
+      end-wait 100)
 
-(defun smithers-simple (left-pad fps)
+(defun place-text (xytext)
+  "Place text and position from XYTEXT made up of (x y text
+clear), where clear makes the active-text nil."
+  (with-current-buffer "*smithers*"
+    (if (nth 3 xytext) (setq active-text nil))
+    (push xytext active-text)
+    (dolist (xyt active-text)
+      (let ((left (nth 0 xyt))
+            (top (nth 1 xyt))
+            (text (nth 2 xyt)))
+        (artist-text-insert-common left top text nil)))
+    (if (>= (length active-text) backlen)
+        (setq active-text (subseq active-text 0 backlen)))))
+
+(defun smithers-simple (leftpad fps)
   "Simple init."
   (let ((cbuff (current-buffer))
-        (ascii-map (-map (lambda (x) (cons x (get-text-contents x left-pad)))
+        (ascii-map (-map (lambda (x) (cons x (get-text-contents x leftpad)))
                          '(start0 start1 start2 start3 start4 start5 start6
                                   closed opened winked))))
     (with-current-buffer (get-buffer-create "*smithers*")
       (switch-to-buffer "*smithers*")
+      (setq-local cursor-type nil)
       (buffer-disable-undo)
       (toggle-truncate-lines 1)
       (message "")
-      (text-scale-set -2.5)
-      (setq-local cursor-type nil)
+      (text-scale-set -3.5)
       (dolist (page timings)
         (let* ((asc-key (plist-get page :ascii))
                (ticks (plist-get page :duration))
@@ -125,8 +199,9 @@
           (when asc-txt
             (erase-buffer)
             (insert asc-txt))
-          (if ticks
-              (if (> ticks 0)
-                  (sit-for (/ (float ticks) fps))))))
+          (if xytext (place-text xytext))
+          (if (> (or ticks 0) 0)
+              (sit-for (/ (float ticks) fps)))))
+      (sit-for (/ (float end-wait) fps))
       (kill-buffer))
     (switch-to-buffer cbuff)))
