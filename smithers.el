@@ -15,6 +15,9 @@
 ;; from the The Simpsons of Charles Montgomery Burns.
 
 ;;; Code:
+(require 'dash)
+(require 'artist)
+
 (defgroup smithers nil
   "Smithers customization group."
   :group 'emacs)
