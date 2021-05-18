@@ -25,7 +25,7 @@
   :group 'smithers)
 
 (defcustom smithers-leftpad 100
-  "Amount of left-padding to center the graphics.  Decrease this value if the text is too far to the right."
+  "Amount of left-padding to centre the graphics.  Decrease this value if the text is too far to the right."
   :type 'integer
   :group 'smithers)
 
@@ -34,7 +34,7 @@
   :type 'integer
   :group 'smithers)
   
-(defcustom smithers-espeakcommand "espeak -ven-us+m5 -p 80 -s 170 -g 10"
+(defcustom smithers-espeakcomm "espeak -ven-us+m5 -p 80 -s 170 -g 10"
   "Command used to generate WAVs in the ``smithers-dirwavs'' directory.
 This operation is only performed once for each sound key."
   :type 'string
@@ -91,58 +91,58 @@ Due to copyright infringement, all WAVs were generated using espeak, but it can 
     (:ascii start6 :duration 02)
     ;; Talking Sequence
     (:ascii closed :duration ,(- 08 smithers-audiodelay))
-    (:espeak hello :duration 10)(:ascii opened :duration 11 :text (15 46 "
+    (:espeak hello :duration 10)(:ascii opened :duration 11 :text (15 45 "
 ┬ ┬┌─┐┬
 ├─┤├┤ │
-┴ ┴└─┘┴─┘" t))(:ascii closed :duration ,(- 06 smithers-audiodelay) :text (24 46 "
+┴ ┴└─┘┴─┘" t))(:ascii closed :duration ,(- 06 smithers-audiodelay) :text (24 45 "
 ┬  ┌─┐
 │  │ │
-┴─┘└─┘"))(:espeak smithers :duration ,smithers-audiodelay) (:ascii opened :duration 10 :text (32 46 "
+┴─┘└─┘"))(:espeak smithers :duration ,smithers-audiodelay) (:ascii opened :duration 10 :text (32 45 "
 ┌─┐┌┬┐┬
 └─┐││││
-└─┘┴ ┴┴"))(:ascii closed :duration ,(- 16 smithers-audiodelay) :text (39 46 "
+└─┘┴ ┴┴"))(:ascii closed :duration ,(- 16 smithers-audiodelay) :text (39 45 "
 ┌┬┐┬ ┬┌─┐┬─┐┌─┐
  │ ├─┤├┤ ├┬┘└─┐
- ┴ ┴ ┴└─┘┴└─└─┘"))(:espeak youre :duration ,smithers-audiodelay)(:ascii opened :duration 06 :text (21 52 "
+ ┴ ┴ ┴└─┘┴└─└─┘"))(:espeak youre :duration ,smithers-audiodelay)(:ascii opened :duration 06 :text (21 51 "
 ┬ ┬┌─┐┬ ┬
 └┬┘│ ││ │
- ┴ └─┘└─┘"))(:ascii closed :duration ,(- 04 smithers-audiodelay) :text (30 52 "
+ ┴ └─┘└─┘"))(:ascii closed :duration ,(- 04 smithers-audiodelay) :text (30 51 "
 |┬─┐┌─┐
  ├┬┘├┤
- ┴└─└─┘"))(:espeak quite :duration ,smithers-audiodelay)(:ascii opened :duration 06 :text (40 52 "
+ ┴└─└─┘"))(:espeak quite :duration ,smithers-audiodelay)(:ascii opened :duration 06 :text (40 51 "
 ┌─┐ ┬ ┬┬
 │─┼┐│ ││
-└─┘└└─┘┴"))(:ascii closed :duration ,(- 06 smithers-audiodelay) :text (48 52 "
+└─┘└└─┘┴"))(:ascii closed :duration ,(- 06 smithers-audiodelay) :text (48 51 "
 ┌┬┐┌─┐
  │ ├┤
- ┴ └─┘"))(:espeak good :duration ,smithers-audiodelay)(:ascii opened :duration 10 :text (33 58 "
+ ┴ └─┘"))(:espeak good :duration ,smithers-audiodelay)(:ascii opened :duration 10 :text (33 57 "
 ┌─┐┌─┐
 │ ┬│ │
-└─┘└─┘"))(:ascii closed :duration ,(- 08 smithers-audiodelay) :text (39 58 "
+└─┘└─┘"))(:ascii closed :duration ,(- 08 smithers-audiodelay) :text (39 57 "
 ┌─┐┌┬┐
 │ │ ││
-└─┘─┴┘"))(:espeak at :duration ,smithers-audiodelay)(:ascii opened :duration 08 :text (48 58 "
+└─┘─┴┘"))(:espeak at :duration ,smithers-audiodelay)(:ascii opened :duration 08 :text (48 57 "
 ┌─┐
 ├─┤
-┴ ┴"))(:ascii closed :duration ,(- 06 smithers-audiodelay) :text (51 58 "
+┴ ┴"))(:ascii closed :duration ,(- 06 smithers-audiodelay) :text (51 57 "
 ┌┬┐
  │
- ┴"))(:espeak turning :duration ,smithers-audiodelay)(:ascii opened :duration 11 :text (15 64 "
+ ┴"))(:espeak turning :duration ,smithers-audiodelay)(:ascii opened :duration 11 :text (15 63 "
 ┌┬┐┬ ┬┬─┐┌┐┌
  │ │ │├┬┘│││
- ┴ └─┘┴└-┘└┘"))(:ascii closed :duration ,(- 06 smithers-audiodelay) :text (27 64 "
+ ┴ └─┘┴└-┘└┘"))(:ascii closed :duration ,(- 06 smithers-audiodelay) :text (27 63 "
 -┬-┌┐┌┌─┐
  │ ││││ ┬
- ┴ ┘└┘└─┘"))(:espeak me :duration ,smithers-audiodelay)(:ascii opened :duration 06 :text (39 64 "
+ ┴ ┘└┘└─┘"))(:espeak me :duration ,smithers-audiodelay)(:ascii opened :duration 06 :text (39 63 "
 ┌┬┐
 │││
-┴ ┴"))(:ascii closed :duration ,(- 06 smithers-audiodelay) :text (42 64 "
+┴ ┴"))(:ascii closed :duration ,(- 06 smithers-audiodelay) :text (42 63 "
 ┌─┐
 ├┤
-└─┘"))(:espeak on :duration ,smithers-audiodelay)(:ascii opened :duration 10 :text (48 64 "
+└─┘"))(:espeak on :duration ,smithers-audiodelay)(:ascii opened :duration 10 :text (48 63 "
 ┌─┐
 │ │
-└─┘"))(:ascii closed :duration 24 :text (51 64 "
+└─┘"))(:ascii closed :duration 24 :text (51 63 "
 ┌┐┌
 │││
 ┘└┘"))
@@ -162,7 +162,7 @@ Due to copyright infringement, all WAVs were generated using espeak, but it can 
              (fname (expand-file-name (format "%s.wav" key) smithers-dirwavs))
              (phenoms (alist-get key smithers--soundalist)))
         (call-process-shell-command
-         (format "%s \"[[%s]]\" -w %s" smithers-espeakcommand phenoms fname) nil 0)))))
+         (format "%s \"[[%s]]\" -w %s" smithers-espeakcomm phenoms fname) nil 0)))))
 
 (defun smithers--playwav (speechkey)
   "Asynchronously play WAV file associated with SPEECHKEY, and error out if not present."
