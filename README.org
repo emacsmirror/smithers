@@ -1,0 +1,48 @@
+#+TITLE: smithers.el
+
+#+HTML: <a href="https://melpa.org/#/smithers"><img src="https://melpa.org/packages/smithers.svg"></a>
+
+Sometimes we all need is a raunchy message of encouragement from our employer.  This is a recreation of Waylon Smithers' [[https://www.youtube.com/watch?v=5xbyJGM1iUY][startup message]] from The Simpsons of Charles Montgomery Burns.
+
+#+HTML: <img src="https://gitlab.com/mtekman/smithers-startup.el/uploads/1ee4c821ea40376180c1c9b5eedf6fb8/output3.gif" />
+
+The audio is generated using [[http://espeak.sourceforge.net/][espeak]] phenomes, but it can speak with any audio (official or otherwise) that you feed it.
+
+** Installation
+
+   Install directly from MELPA or using =use-package=.
+
+  #+begin_src elisp
+(use-package smithers
+  :init
+  ;; Adjust these to better
+  ;; fit your window dimensions
+  (setq smithers-leftpad 20
+        smithers-scale -2.5
+        smithers-fps 25))
+  #+end_src
+
+** Usage and Customization
+
+   Run =smithers=, or =smithers-with-opts= to better tailor your window dimensions
+
+   The following options below can be customized (the prefix =smithers= has been removed from the varname):
+
+  | VarName           |   Default | Description                                                                   |
+  |-------------------+-----------+-------------------------------------------------------------------------------|
+  | -fps              |        25 | Frames per second to scale the duration intervals between each audio/graphic. |
+  | -leftpad          |       100 | Amount of left-padding to apply and better centre the graphics.               |
+  | -scale            |      -3.5 | Amount to scale the ascii text. Negative values reduce the size.              |
+  | -audiodelay       |         5 | Number of frames in which to delay rendering if media player is slow.         |
+  | -activetext-limit |        50 | Maximum number of text items to render at any given time.                     |
+  | -enddelay         |        50 | Number of frames to wait at the end of the animation.                         |
+  | -mediaplaycomm    |     "mpv" | Media player command used to play WAVs.                                       |
+  | -dirascii         | "./ascii" | Directory where the ascii are kept.                                           |
+  | -dirwavs          |  "./wavs" | Directory where the wavs are kept.                                            |
+
+
+  The command to change the pitch (-p), speed (-s) and word gap (-g) for the espeak wav file can also be set by changing the variable, and by deleting all the WAVs in the =smithers-dirwavs= folder (which will force a regeneration).
+
+  | VarName     | Default                                |
+  |-------------+----------------------------------------|
+  | -espeakcomm | "espeak -ven-us+m5 -p 80 -s 170 -g 10" |
