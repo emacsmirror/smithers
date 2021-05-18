@@ -1,7 +1,7 @@
 #+TITLE: Mr Burns
 
 Everything is scaled to Height 70 and Width 156
-The timings are given as ticks shown by incrementing through the video
+The timings are given as ticks shown by incrementing through the [[https://www.youtube.com/watch?v=5xbyJGM1iUY][source video]]
 
 Export the tangled blocks (make sure that "ascii" folder exists).
 (setq-local org-src-preserve-indentation t)
