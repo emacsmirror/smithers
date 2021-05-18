@@ -35,7 +35,7 @@
   :group 'smithers)
   
 (defcustom smithers-espeakcommand "espeak -ven-us+m5 -p 80 -s 170 -g 10"
-  "Command used to generate WAVs in the ``smithers--dirwavs'' directory.
+  "Command used to generate WAVs in the ``smithers-dirwavs'' directory.
 This operation is only performed once for each sound key."
   :type 'string
   :group 'smithers)
@@ -60,10 +60,20 @@ This operation is only performed once for each sound key."
   :type 'integer
   :group 'smithers)
 
-(setq smithers--dirpackage "." ;; (expand-file-name "smithers-startup" user-emacs-directory)
-      smithers--dirascii (expand-file-name "ascii" smithers--dirpackage)
-      smithers--dirwavs (expand-file-name "wavs" smithers--dirpackage))
+(defcustom smithers-dirascii
+  (expand-file-name "ascii" ".")
+  "Directory where the ascii of Burns are."
+  :type 'directory
+  :group 'smithers)
 
+(defcustom smithers-dirwavs
+  (expand-file-name "wavs" ".")
+  "The directory of WAVs containing the necessary files:
+{hello,smithers,youre,quite,good,at,turning,me,on}.wav
+
+Due to copyright infringement, all WAVs were generated using espeak, but it can technically use any WAVs you get it."
+  :type 'directory
+  :group 'smithers)
 
 (defvar smithers--soundalist
   '((hello "he@'ll',u:")(smithers "smi,D3:ss")
@@ -144,12 +154,12 @@ This operation is only performed once for each sound key."
 
 (defun smithers--assert-wavs (&optional overwrite)
   "Assert that directory for wavs exists, and if not create and populate it.  If OVERWRITE is t, then overwrite."
-  (when (or overwrite (not (file-exists-p (expand-file-name "hello.wav" smithers--dirwavs))))
+  (when (or overwrite (not (file-exists-p (expand-file-name "hello.wav" smithers-dirwavs))))
     (message "Generating WAVs")
-    (mkdir smithers--dirwavs t)
+    (mkdir smithers-dirwavs t)
     (dolist (speech (--filter (plist-get it :espeak) smithers--timings))
       (let* ((key (plist-get speech :espeak))
-             (fname (expand-file-name (format "%s.wav" key) smithers--dirwavs))
+             (fname (expand-file-name (format "%s.wav" key) smithers-dirwavs))
              (phenoms (alist-get key smithers--soundalist)))
         (call-process-shell-command
          (format "%s \"[[%s]]\" -w %s" smithers-espeakcommand phenoms fname) nil 0)))))
@@ -159,7 +169,7 @@ This operation is only performed once for each sound key."
   (call-process-shell-command
    (format "%s '%s'"
            smithers-mediaplaycomm (expand-file-name (format "%s.wav" speechkey)
-                                                    smithers--dirwavs))
+                                                    smithers-dirwavs))
    nil 0))
 
 (defun smithers--getascii (ascii-key &optional lpad)
