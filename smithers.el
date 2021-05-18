@@ -36,7 +36,7 @@
   "Amount to scale the text in the '*smithers*' buffer.  Negative values reduce the size."
   :type 'integer
   :group 'smithers)
-  
+
 (defcustom smithers-espeakcomm "espeak -ven-us+m5 -p 80 -s 170 -g 10"
   "Command used to generate WAVs in the ``smithers-dirwavs'' directory.
 This operation is only performed once for each sound key."
@@ -150,7 +150,7 @@ Due to copyright infringement, all WAVs were generated using espeak, but it can 
 │││
 ┘└┘"))
     ;; Winky wink
-(:ascii winked :duration 16 :text (1 1 ""))(:ascii closed :duration 7 :text (1 1 " ")))
+    (:ascii winked :duration 16 :text (1 1 ""))(:ascii closed :duration 7 :text (1 1 " ")))
   "Timings, with durations as derived from counting frames from the source video.  The ``smithers-audiodelay' given is designed to overcome any overhead in spawning the media player so that the open mouth ascii syncs with the start of the synthesized speech.")
 
 ;; --{ Functions }---
@@ -177,7 +177,7 @@ Due to copyright infringement, all WAVs were generated using espeak, but it can 
 
 (defun smithers--getascii (ascii-key &optional lpad)
   "Retrieve the text contents of 'ascii/ASCII-KEY.txt' and left-pad by LPAD amount."
-  (let ((fname (expand-file-name (format "%s.txt" ascii-key) smithers--dirascii)))
+  (let ((fname (expand-file-name (format "%s.txt" ascii-key) smithers-dirascii)))
     (if (file-exists-p fname)
         (with-temp-buffer
           (insert-file-contents fname)
@@ -199,7 +199,7 @@ Options given in XYTEXT made up of (x y text clear) where clear sets the ``smith
             (text (nth 2 xyt)))
         (artist-text-insert-common left top text nil)))
     (if (>= (length smithers--activetext) smithers-activetext-limit)
-        (setq smithers--activetext (subseq smithers--activetext 0 smithers-activetext-limit)))))
+        (setq smithers--activetext (cl-subseq smithers--activetext 0 smithers-activetext-limit)))))
 
 ;;;###autoload
 (defun smithers-with-opts (lpad scale fps)
