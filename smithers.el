@@ -27,7 +27,7 @@
   :type 'integer
   :group 'smithers)
 
-(defcustom smithers-leftpad 100
+(defcustom smithers-leftpad 50
   "Amount of left-padding to centre the graphics.  Decrease this value if the text is too far to the right."
   :type 'integer
   :group 'smithers)
@@ -65,7 +65,7 @@ This operation is only performed once for each sound key."
 
 (defcustom smithers-dirascii
   (expand-file-name "ascii" ".")
-  "Directory where the ascii of Burns are."
+  "Directory where the ascii graphics of Burns are kept."
   :type 'directory
   :group 'smithers)
 
@@ -74,7 +74,7 @@ This operation is only performed once for each sound key."
   "The directory of WAVs containing the necessary files:
 {hello,smithers,youre,quite,good,at,turning,me,on}.wav
 
-Due to copyright infringement, all WAVs were generated using espeak, but it can technically use any WAVs you get it."
+Due to copyright infringement, all WAVs were generated using espeak, however it can technically use any WAVs you give it."
   :type 'directory
   :group 'smithers)
 
@@ -95,8 +95,8 @@ Due to copyright infringement, all WAVs were generated using espeak, but it can 
     ;; Talking Sequence
     (:ascii closed :duration ,(- 08 smithers-audiodelay))
     (:espeak hello :duration 10)(:ascii opened :duration 11 :text (15 45 "
-┬ ┬┌─┐┬
-├─┤├┤ │
+┬ ┬┌─┐┬  
+├─┤├┤ │  
 ┴ ┴└─┘┴─┘" t))(:ascii closed :duration ,(- 06 smithers-audiodelay) :text (24 45 "
 ┬  ┌─┐
 │  │ │
@@ -111,13 +111,13 @@ Due to copyright infringement, all WAVs were generated using espeak, but it can 
 └┬┘│ ││ │
  ┴ └─┘└─┘"))(:ascii closed :duration ,(- 04 smithers-audiodelay) :text (30 51 "
 |┬─┐┌─┐
- ├┬┘├┤
+ ├┬┘├┤ 
  ┴└─└─┘"))(:espeak quite :duration ,smithers-audiodelay)(:ascii opened :duration 06 :text (40 51 "
 ┌─┐ ┬ ┬┬
 │─┼┐│ ││
 └─┘└└─┘┴"))(:ascii closed :duration ,(- 06 smithers-audiodelay) :text (48 51 "
 ┌┬┐┌─┐
- │ ├┤
+ │ ├┤ 
  ┴ └─┘"))(:espeak good :duration ,smithers-audiodelay)(:ascii opened :duration 10 :text (33 57 "
 ┌─┐┌─┐
 │ ┬│ │
@@ -129,7 +129,7 @@ Due to copyright infringement, all WAVs were generated using espeak, but it can 
 ├─┤
 ┴ ┴"))(:ascii closed :duration ,(- 06 smithers-audiodelay) :text (51 57 "
 ┌┬┐
- │
+ │ 
  ┴"))(:espeak turning :duration ,smithers-audiodelay)(:ascii opened :duration 11 :text (15 63 "
 ┌┬┐┬ ┬┬─┐┌┐┌
  │ │ │├┬┘│││
@@ -141,7 +141,7 @@ Due to copyright infringement, all WAVs were generated using espeak, but it can 
 │││
 ┴ ┴"))(:ascii closed :duration ,(- 06 smithers-audiodelay) :text (42 63 "
 ┌─┐
-├┤
+├┤ 
 └─┘"))(:espeak on :duration ,smithers-audiodelay)(:ascii opened :duration 10 :text (48 63 "
 ┌─┐
 │ │
@@ -157,15 +157,17 @@ Due to copyright infringement, all WAVs were generated using espeak, but it can 
 
 (defun smithers--assert-wavs (&optional overwrite)
   "Assert that directory for wavs exists, and if not create and populate it.  If OVERWRITE is t, then overwrite."
-  (when (or overwrite (not (file-exists-p (expand-file-name "hello.wav" smithers-dirwavs))))
-    (message "Generating WAVs")
+  (when (or overwrite
+            (and (not (file-exists-p (expand-file-name "hello.wav" smithers-dirwavs)))
+                 (y-or-n-p (format "Could not find WAVs in '%s', regenerate?" smithers-dirwavs))))
     (mkdir smithers-dirwavs t)
     (dolist (speech (--filter (plist-get it :espeak) smithers--timings))
       (let* ((key (plist-get speech :espeak))
              (fname (expand-file-name (format "%s.wav" key) smithers-dirwavs))
              (phenoms (alist-get key smithers--soundalist)))
-        (call-process-shell-command
-         (format "%s \"[[%s]]\" -w %s" smithers-espeakcomm phenoms fname) nil 0)))))
+            (call-process-shell-command
+             (format "%s \"[[%s]]\" -w %s" smithers-espeakcomm phenoms fname) nil 0)))
+    (message "Regenerating WAVs")))
 
 (defun smithers--playwav (speechkey)
   "Asynchronously play WAV file associated with SPEECHKEY, and error out if not present."
@@ -181,7 +183,7 @@ Due to copyright infringement, all WAVs were generated using espeak, but it can 
     (if (file-exists-p fname)
         (with-temp-buffer
           (insert-file-contents fname)
-          (if lpad ;; Insert vertical column
+          (if lpad ;; Insert a vertical column of space
               (replace-rectangle (point-min) (point-max)
                                  (make-string lpad ? )))
           (buffer-substring-no-properties
@@ -189,7 +191,7 @@ Due to copyright infringement, all WAVs were generated using espeak, but it can 
 
 (defun smithers--placetext (xytext)
   "Place text at position and optionally add to active text space.
-Options given in XYTEXT made up of (x y text clear) where clear sets the ``smithers--activetext'' nil."
+Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smithers--activetext''."
   (with-current-buffer "*smithers*"
     (if (nth 3 xytext) (setq smithers--activetext nil))
     (push xytext smithers--activetext)
