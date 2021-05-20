@@ -5,8 +5,8 @@
 ;; Author: Mehmet Tekman
 ;; URL: https://gitlab.com/mtekman/smithers.el
 ;; Keywords: games
-;; Package-Requires: ((emacs "26.1") (dash "2.17.0"))
-;; Version: 0.1
+;; Package-Requires: ((emacs "26.1") (dash "2.17.0") (org "9.4.5"))
+;; Version: 0.2
 
 ;;; Commentary:
 ;;
@@ -17,6 +17,7 @@
 ;;; Code:
 (require 'dash)
 (require 'artist)
+(require 'org)
 
 (defgroup smithers nil
   "Smithers customization group."
@@ -69,7 +70,7 @@ This operation is only performed once for each sound key."
 
 (defvar smithers-dirdata
   (expand-file-name "data" smithers-dir)
-  "Directory where smithers data directory is")
+  "Directory where smithers data directory is.")
 
 (defcustom smithers-dirgraphics
   (expand-file-name "graphics" smithers-dirdata)
@@ -145,7 +146,7 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
 (defun smithers--checktestfile (test-file test-dir typetext)
   "Check that TEST-FILE exists, and if not offer to regenerate it (and others) in TEST-DIR, mentioning TYPETEXT."
   (and (not (file-exists-p (expand-file-name test-file test-dir)))
-       (y-or-n-p (format "Could not find %s in '%s', regenerate?"
+       (y-or-n-p (format "Could not find %s in '%s', regenerate? "
                          typetext test-dir))))
 
 (defun smithers--findsourcefile ()
@@ -154,10 +155,10 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
          (source-org-file2 (expand-file-name "source.org")))
     (cond ((file-exists-p source-org-file1) source-org-file1)
           ((file-exists-p source-org-file2) source-org-file2)
-          (t (error "Could not find 'source.org' to generate ascii...")))))
+          (t (error "Could not find 'source.org' to generate ascii")))))
 
 (defun smithers--tangleblocks (startheader endheader directory)
-  "Tangle blocks from source org-mode file between STARTHEADER and ENDHEADER, and prepend tangle blocks with DIRECTORY."
+  "Tangle blocks from source `org-mode' file between STARTHEADER and ENDHEADER, and prepend tangle blocks with DIRECTORY."
   (with-current-buffer (find-file (smithers--findsourcefile))
     (goto-char 0)
     (setq-local org-src-preserve-indentation t)
@@ -199,12 +200,12 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
       (let* ((key (plist-get speech :espeak))
              (fname (expand-file-name (format "%s.wav" key) smithers-dirwavs))
              (phenoms (alist-get key smithers--soundalist)))
-            (shell-command
-             (format "%s \"[[%s]]\" -w %s" smithers-espeakcomm phenoms fname) nil nil)))
+        (shell-command
+         (format "%s \"[[%s]]\" -w %s" smithers-espeakcomm phenoms fname) nil nil)))
     (message "Regenerating WAVs")))
 
 (defun smithers--assertallmedia (&optional doit)
-  "Detect if this is the first time that ``smithers'' has been run. If so, regenerate everything, otherwise partially. The DOIT option forces all regeneration."
+  "Detect if this is the first time that ``smithers'' has been run.  If so, regenerate everything, otherwise partially.  The DOIT option force all regeneration."
   (save-excursion
     (let ((genall (or doit (not (file-exists-p smithers-dirdata)))))
       (smithers--assert-graphics genall)
@@ -240,7 +241,7 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
 
 (defun smithers--placeword (xytext asciitext)
   "Place text at position and optionally add to active text space.
-Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smithers--activetext''."
+Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smithers--activetext''.  The ASCIITEXT provides the actual ascii.  This function could be written a bit cleaner since we don't need the text component, only the ascii."
   (with-current-buffer "*smithers*"
     (if (nth 3 xytext)
         (setq smithers--activetext nil))
@@ -267,7 +268,7 @@ Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smit
                          '(start0 start1 start2 start3 start4 start5 start6
                                   closed opened winked)))
         (word-map (-map (lambda (x) (cons x (smithers--getword x)))
-                         '(hel lo smi thers you re qui te go od a t turn ing m e o n))))
+                        '(hel lo smi thers you re qui te go od a t turn ing m e o n))))
     (smithers--assertallmedia)
     (with-current-buffer (get-buffer-create "*smithers*")
       (switch-to-buffer "*smithers*")
@@ -288,7 +289,7 @@ Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smit
             (erase-buffer)
             (insert asc-gfx))
           (if xytext ;; still render nil text
-            (smithers--placeword xytext asc-wrd))
+              (smithers--placeword xytext asc-wrd))
           (if (> (or ticks 0) 0)
               (sit-for (/ (float ticks) fps)))))
       (sit-for (/ (float smithers-enddelay) fps))
