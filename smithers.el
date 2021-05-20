@@ -246,11 +246,13 @@ Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smit
         (setq smithers--activetext nil))
     (if (nth 2 xytext) ;; a nil value will still render previous words
         (push (list (nth 0 xytext) (nth 1 xytext) asciitext) smithers--activetext))
+    (artist-mode 1) ;; required for insert to work without artefacts
     (dolist (xyt smithers--activetext)
       (let ((left (nth 0 xyt))
             (top (nth 1 xyt))
             (text (nth 2 xyt)))
         (artist-text-insert-common left top text nil)))
+    (artist-mode -1)
     (if (>= (length smithers--activetext) smithers-activetext-limit)
         (setq smithers--activetext (cl-subseq smithers--activetext 0 smithers-activetext-limit)))))
 
