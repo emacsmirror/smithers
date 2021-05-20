@@ -63,14 +63,22 @@ This operation is only performed once for each sound key."
   :type 'integer
   :group 'smithers)
 
-(defcustom smithers-dirascii
-  (expand-file-name "ascii" ".")
+(defvar smithers-dir
+  (expand-file-name "smithers" package-user-dir)
+  "Directory where smimthers is installed.")
+
+(defvar smithers-dirdata
+  (expand-file-name "data" smithers-dir)
+  "Directory where smithers data directory is")
+
+(defcustom smithers-dirgraphics
+  (expand-file-name "graphics" smithers-dirdata)
   "Directory where the ascii graphics of Burns are kept."
   :type 'directory
   :group 'smithers)
 
 (defcustom smithers-dirwavs
-  (expand-file-name "wavs" ".")
+  (expand-file-name "wavs" smithers-dirdata)
   "The directory of WAVs containing the necessary files:
 {hello,smithers,youre,quite,good,at,turning,me,on}.wav
 
@@ -78,14 +86,20 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
   :type 'directory
   :group 'smithers)
 
+(defcustom smithers-dirwords
+  (expand-file-name "words" smithers-dirdata)
+  "The directory where the ascii graphics of words are kept."
+  :type 'directory
+  :group 'smithers)
+
 (defvar smithers--soundalist
-  '((hello "he@'ll',u:")(smithers "smi,D3:ss")
-    (youre "juor")(quite "kwaIt")(good "gU@d")
-    (at "ad")(turning "d3::nI2N")(me "mi:::")(on "A@:n"))
+  '((hello . "he@'ll',u:")(smithers . "smi,D3:ss")
+    (youre . "juor")(quite . "kwaIt")(good . "gU@d")
+    (at . "ad")(turning . "d3::nI2N")(me . "mi:::")(on . "A@:n"))
   "Alist of sound keys and their phenomes.")
 
 (defvar smithers--activetext nil
-  "List of text to render in the next frame.  Elements are pushed from ``smithers--placetext''.")
+  "List of text to render in the next frame.  Elements are pushed from ``smithers--placeword''.")
 
 (defvar smithers--timings
   `(;; Startup sequence
@@ -94,80 +108,108 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
     (:ascii start6 :duration 02)
     ;; Talking Sequence
     (:ascii closed :duration ,(- 08 smithers-audiodelay))
-    (:espeak hello :duration 10)(:ascii opened :duration 11 :text (15 45 "
-┬ ┬┌─┐┬  
-├─┤├┤ │  
-┴ ┴└─┘┴─┘" t))(:ascii closed :duration ,(- 06 smithers-audiodelay) :text (24 45 "
-┬  ┌─┐
-│  │ │
-┴─┘└─┘"))(:espeak smithers :duration ,smithers-audiodelay) (:ascii opened :duration 10 :text (32 45 "
-┌─┐┌┬┐┬
-└─┐││││
-└─┘┴ ┴┴"))(:ascii closed :duration ,(- 16 smithers-audiodelay) :text (39 45 "
-┌┬┐┬ ┬┌─┐┬─┐┌─┐
- │ ├─┤├┤ ├┬┘└─┐
- ┴ ┴ ┴└─┘┴└─└─┘"))(:espeak youre :duration ,smithers-audiodelay)(:ascii opened :duration 06 :text (21 51 "
-┬ ┬┌─┐┬ ┬
-└┬┘│ ││ │
- ┴ └─┘└─┘"))(:ascii closed :duration ,(- 04 smithers-audiodelay) :text (30 51 "
-|┬─┐┌─┐
- ├┬┘├┤ 
- ┴└─└─┘"))(:espeak quite :duration ,smithers-audiodelay)(:ascii opened :duration 06 :text (40 51 "
-┌─┐ ┬ ┬┬
-│─┼┐│ ││
-└─┘└└─┘┴"))(:ascii closed :duration ,(- 06 smithers-audiodelay) :text (48 51 "
-┌┬┐┌─┐
- │ ├┤ 
- ┴ └─┘"))(:espeak good :duration ,smithers-audiodelay)(:ascii opened :duration 10 :text (33 57 "
-┌─┐┌─┐
-│ ┬│ │
-└─┘└─┘"))(:ascii closed :duration ,(- 08 smithers-audiodelay) :text (39 57 "
-┌─┐┌┬┐
-│ │ ││
-└─┘─┴┘"))(:espeak at :duration ,smithers-audiodelay)(:ascii opened :duration 08 :text (48 57 "
-┌─┐
-├─┤
-┴ ┴"))(:ascii closed :duration ,(- 06 smithers-audiodelay) :text (51 57 "
-┌┬┐
- │ 
- ┴"))(:espeak turning :duration ,smithers-audiodelay)(:ascii opened :duration 11 :text (15 63 "
-┌┬┐┬ ┬┬─┐┌┐┌
- │ │ │├┬┘│││
- ┴ └─┘┴└-┘└┘"))(:ascii closed :duration ,(- 06 smithers-audiodelay) :text (27 63 "
--┬-┌┐┌┌─┐
- │ ││││ ┬
- ┴ ┘└┘└─┘"))(:espeak me :duration ,smithers-audiodelay)(:ascii opened :duration 06 :text (39 63 "
-┌┬┐
-│││
-┴ ┴"))(:ascii closed :duration ,(- 06 smithers-audiodelay) :text (42 63 "
-┌─┐
-├┤ 
-└─┘"))(:espeak on :duration ,smithers-audiodelay)(:ascii opened :duration 10 :text (48 63 "
-┌─┐
-│ │
-└─┘"))(:ascii closed :duration 24 :text (51 63 "
-┌┐┌
-│││
-┘└┘"))
+    (:espeak hello :duration 10)
+    (:ascii opened :duration 11 :text (15 45 hel t))
+    (:ascii closed :duration ,(- 06 smithers-audiodelay) :text (24 45 lo))
+    (:espeak smithers :duration ,smithers-audiodelay)
+    (:ascii opened :duration 10 :text (32 45 smi))
+    (:ascii closed :duration ,(- 16 smithers-audiodelay) :text (39 45 thers))
+    (:espeak youre :duration ,smithers-audiodelay)
+    (:ascii opened :duration 06 :text (21 51 you))
+    (:ascii closed :duration ,(- 04 smithers-audiodelay) :text (30 51 re))
+    (:espeak quite :duration ,smithers-audiodelay)
+    (:ascii opened :duration 06 :text (40 51 qui))
+    (:ascii closed :duration ,(- 06 smithers-audiodelay) :text (48 51 te))
+    (:espeak good :duration ,smithers-audiodelay)
+    (:ascii opened :duration 10 :text (33 57 go))
+    (:ascii closed :duration ,(- 08 smithers-audiodelay) :text (39 57 od))
+    (:espeak at :duration ,smithers-audiodelay)
+    (:ascii opened :duration 08 :text (48 57 a))
+    (:ascii closed :duration ,(- 06 smithers-audiodelay) :text (51 57 t))
+    (:espeak turning :duration ,smithers-audiodelay)
+    (:ascii opened :duration 11 :text (15 63 turn))
+    (:ascii closed :duration ,(- 06 smithers-audiodelay) :text (27 63 ing))
+    (:espeak me :duration ,smithers-audiodelay)
+    (:ascii opened :duration 06 :text (39 63 m))
+    (:ascii closed :duration ,(- 06 smithers-audiodelay) :text (42 63 e))
+    (:espeak on :duration ,smithers-audiodelay)
+    (:ascii opened :duration 10 :text (48 63 o))
+    (:ascii closed :duration 24 :text (51 63 n))
     ;; Winky wink
-    (:ascii winked :duration 16 :text (1 1 ""))(:ascii closed :duration 7 :text (1 1 " ")))
+    (:ascii winked :duration 16 :text (1 1 nil))
+    (:ascii closed :duration 7 :text (1 1 nil)))
   "Timings, with durations as derived from counting frames from the source video.  The ``smithers-audiodelay' given is designed to overcome any overhead in spawning the media player so that the open mouth ascii syncs with the start of the synthesized speech.")
 
 ;; --{ Functions }---
 
+(defun smithers--checktestfile (test-file test-dir typetext)
+  "Check that TEST-FILE exists, and if not offer to regenerate it (and others) in TEST-DIR, mentioning TYPETEXT."
+  (and (not (file-exists-p (expand-file-name test-file test-dir)))
+       (y-or-n-p (format "Could not find %s in '%s', regenerate?"
+                         typetext test-dir))))
+
+(defun smithers--findsourcefile ()
+  "Find the source.org file for generating ASCII."
+  (let* ((source-org-file1 (expand-file-name "source.org" smithers-dir))
+         (source-org-file2 (expand-file-name "source.org")))
+    (cond ((file-exists-p source-org-file1) source-org-file1)
+          ((file-exists-p source-org-file2) source-org-file2)
+          (t (error "Could not find 'source.org' to generate ascii...")))))
+
+(defun smithers--tangleblocks (startheader endheader directory)
+  "Tangle blocks from source org-mode file between STARTHEADER and ENDHEADER, and prepend tangle blocks with DIRECTORY."
+  (with-current-buffer (find-file (smithers--findsourcefile))
+    (goto-char 0)
+    (setq-local org-src-preserve-indentation t)
+    (let* ((beg (re-search-forward startheader))
+           (end (re-search-forward endheader)))
+      (goto-char beg)
+      (while (let* ((now (point)))
+               (and (org-next-block 1)
+                    (< now end)
+                    (>= now beg)))
+        (let* ((block-info (org-babel-get-src-block-info))
+               (text (cadr block-info))
+               (tangle-name (cdar (--filter (eq (car it) :tangle) (caddr block-info))))
+               (newfile-name (expand-file-name tangle-name directory)))
+          (with-temp-buffer
+            (insert text)
+            (write-file newfile-name)))))
+    (kill-buffer)))
+
+(defun smithers--assert-graphics (&optional overwrite)
+  "Assert that directory for ascii graphics exists, and if not create and populate it.  If OVERWRITE is t, then overwrite."
+  (when (or overwrite (smithers--checktestfile "opened.txt" smithers-dirgraphics "ASCII graphics"))
+    (mkdir smithers-dirgraphics t)
+    (smithers--tangleblocks "^* Graphics" "^* Words" smithers-dirgraphics)
+    (message "Graphics generated.")))
+
+(defun smithers--assert-words (&optional overwrite)
+  "Assert that directory for ascii words exists, and if not create and populate it.  If OVERWRITE is t, then overwrite."
+  (when (or overwrite (smithers--checktestfile "a.txt" smithers-dirwords "ASCII words"))
+    (mkdir smithers-dirwords t)
+    (smithers--tangleblocks "^* Words" "^* Timings" smithers-dirwords)
+    (message "Words generated.")))
+
 (defun smithers--assert-wavs (&optional overwrite)
   "Assert that directory for wavs exists, and if not create and populate it.  If OVERWRITE is t, then overwrite."
-  (when (or overwrite
-            (and (not (file-exists-p (expand-file-name "hello.wav" smithers-dirwavs)))
-                 (y-or-n-p (format "Could not find WAVs in '%s', regenerate?" smithers-dirwavs))))
+  (when (or overwrite (smithers--checktestfile "hello.wav" smithers-dirwavs "WAVs"))
     (mkdir smithers-dirwavs t)
     (dolist (speech (--filter (plist-get it :espeak) smithers--timings))
       (let* ((key (plist-get speech :espeak))
              (fname (expand-file-name (format "%s.wav" key) smithers-dirwavs))
              (phenoms (alist-get key smithers--soundalist)))
-            (call-process-shell-command
-             (format "%s \"[[%s]]\" -w %s" smithers-espeakcomm phenoms fname) nil 0)))
+            (shell-command
+             (format "%s \"[[%s]]\" -w %s" smithers-espeakcomm phenoms fname) nil nil)))
     (message "Regenerating WAVs")))
+
+(defun smithers--assertallmedia (&optional doit)
+  "Detect if this is the first time that ``smithers'' has been run. If so, regenerate everything, otherwise partially. The DOIT option forces all regeneration."
+  (save-excursion
+    (let ((genall (or doit (not (file-exists-p smithers-dirdata)))))
+      (smithers--assert-graphics genall)
+      (smithers--assert-words genall)
+      (smithers--assert-wavs genall))))
 
 (defun smithers--playwav (speechkey)
   "Asynchronously play WAV file associated with SPEECHKEY, and error out if not present."
@@ -177,24 +219,33 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
                                                     smithers-dirwavs))
    nil 0))
 
-(defun smithers--getascii (ascii-key &optional lpad)
-  "Retrieve the text contents of 'ascii/ASCII-KEY.txt' and left-pad by LPAD amount."
-  (let ((fname (expand-file-name (format "%s.txt" ascii-key) smithers-dirascii)))
+(defun smithers--getgraphic (ascii-key &optional lpad)
+  "Retrieve the text contents of 'graphics/ASCII-KEY.txt' and left-pad by LPAD amount."
+  (let ((fname (expand-file-name (format "%s.txt" ascii-key) smithers-dirgraphics)))
     (if (file-exists-p fname)
         (with-temp-buffer
           (insert-file-contents fname)
           (if lpad ;; Insert a vertical column of space
-              (replace-rectangle (point-min) (point-max)
-                                 (make-string lpad ? )))
-          (buffer-substring-no-properties
-           (point-min) (point-max))))))
+              (indent-rigidly (point-min) (point-max) lpad))
+          (buffer-substring-no-properties (point-min) (point-max))))))
 
-(defun smithers--placetext (xytext)
+
+(defun smithers--getword (ascii-key)
+  "Retrieve the text contents of 'words/ASCII-KEY.txt'."
+  (let ((fname (expand-file-name (format "%s.txt" ascii-key) smithers-dirwords)))
+    (if (file-exists-p fname)
+        (with-temp-buffer
+          (insert-file-contents fname)
+          (buffer-substring-no-properties (point-min) (point-max))))))
+
+(defun smithers--placeword (xytext asciitext)
   "Place text at position and optionally add to active text space.
 Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smithers--activetext''."
   (with-current-buffer "*smithers*"
-    (if (nth 3 xytext) (setq smithers--activetext nil))
-    (push xytext smithers--activetext)
+    (if (nth 3 xytext)
+        (setq smithers--activetext nil))
+    (if (nth 2 xytext) ;; a nil value will still render previous words
+        (push (list (nth 0 xytext) (nth 1 xytext) asciitext) smithers--activetext))
     (dolist (xyt smithers--activetext)
       (let ((left (nth 0 xyt))
             (top (nth 1 xyt))
@@ -210,10 +261,12 @@ Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smit
                      (read-number "Scale: " -3.5)
                      (read-number "FPS: " smithers-fps)))
   (let ((cbuff (current-buffer))
-        (ascii-map (-map (lambda (x) (cons x (smithers--getascii x lpad)))
+        (ascii-map (-map (lambda (x) (cons x (smithers--getgraphic x lpad)))
                          '(start0 start1 start2 start3 start4 start5 start6
-                                  closed opened winked))))
-    (smithers--assert-wavs)
+                                  closed opened winked)))
+        (word-map (-map (lambda (x) (cons x (smithers--getword x)))
+                         '(hel lo smi thers you re qui te go od a t turn ing m e o n))))
+    (smithers--assertallmedia)
     (with-current-buffer (get-buffer-create "*smithers*")
       (switch-to-buffer "*smithers*")
       (setq-local cursor-type nil)
@@ -226,12 +279,14 @@ Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smit
                (ticks (plist-get page :duration))
                (xytext (plist-get page :text))
                (espeak (plist-get page :espeak))
-               (asc-txt (alist-get asc-key ascii-map)))
+               (asc-gfx (alist-get asc-key ascii-map))
+               (asc-wrd (alist-get (nth 2 xytext) word-map)))
           (if espeak (smithers--playwav espeak))
-          (when asc-txt
+          (when asc-gfx
             (erase-buffer)
-            (insert asc-txt))
-          (if xytext (smithers--placetext xytext))
+            (insert asc-gfx))
+          (if xytext ;; still render nil text
+            (smithers--placeword xytext asc-wrd))
           (if (> (or ticks 0) 0)
               (sit-for (/ (float ticks) fps)))))
       (sit-for (/ (float smithers-enddelay) fps))

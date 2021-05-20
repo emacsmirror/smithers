@@ -6,11 +6,12 @@ The timings are given as ticks shown by incrementing through the [[https://www.y
 Export the tangled blocks (make sure that "ascii" folder exists).
 (setq-local org-src-preserve-indentation t)
 
-* ASCII
+
+* Graphics
 ** Startup
 *** 0
 
-#+begin_src text :tangle ./ascii/start0.txt
+#+begin_src text :tangle start0.txt
 
 
 
@@ -85,7 +86,7 @@ Export the tangled blocks (make sure that "ascii" folder exists).
 
 *** 1
 
-#+begin_src text :tangle ./ascii/start1.txt
+#+begin_src text :tangle start1.txt
 
 
 
@@ -159,7 +160,7 @@ Export the tangled blocks (make sure that "ascii" folder exists).
 #+end_src
 
 *** 2
-#+begin_src text :tangle ./ascii/start2.txt
+#+begin_src text :tangle start2.txt
 
 
 
@@ -234,7 +235,7 @@ Export the tangled blocks (make sure that "ascii" folder exists).
 
 *** 3
 
-#+begin_src text :tangle ./ascii/start3.txt
+#+begin_src text :tangle start3.txt
 
 
 
@@ -309,7 +310,7 @@ Export the tangled blocks (make sure that "ascii" folder exists).
 
 *** 4
 
-#+begin_src text :tangle ./ascii/start4.txt
+#+begin_src text :tangle start4.txt
 
 
 
@@ -384,7 +385,7 @@ Export the tangled blocks (make sure that "ascii" folder exists).
 
 *** 5
 
-#+begin_src text :tangle ./ascii/start5.txt
+#+begin_src text :tangle start5.txt
                                                                          `
                                                               `,,:,,::,,:::::::,:,-
                                                           ,,:,,,,,,,,,,,,:::,,,,,::,:,.
@@ -458,7 +459,7 @@ Export the tangled blocks (make sure that "ascii" folder exists).
 
 *** 6
 
-#+begin_src text :tangle ./ascii/start6.txt
+#+begin_src text :tangle start6.txt
                                                                          `
                                                               `___..'````````-'.'_-`
                                                          `___```````````````````````-,``
@@ -533,7 +534,7 @@ Export the tangled blocks (make sure that "ascii" folder exists).
 
 ** Closed
 
-#+begin_src text :tangle ./ascii/closed.txt
+#+begin_src text :tangle closed.txt
                                                                      ..````...
                                                              __,,,..'````````.'.,::_`
                                                         .,:,.  ```````````````````` .:_,`
@@ -607,7 +608,7 @@ Export the tangled blocks (make sure that "ascii" folder exists).
 
 ** Open
 
-#+begin_src text :tangle ./ascii/opened.txt
+#+begin_src text :tangle opened.txt
                                                                          `  
                                                             -_,,:_...````````.._,:,'
                                                         `,:,   ``````````````````` `:,-
@@ -682,7 +683,7 @@ Export the tangled blocks (make sure that "ascii" folder exists).
 
 ** Wink
 
-#+begin_src text :tangle ./ascii/winked.txt
+#+begin_src text :tangle winked.txt
                                                                     `........`
                                                             ',,,:_...````````.._::,_
                                                         ._,, ````````````````````` `:,_
@@ -753,6 +754,135 @@ Export the tangled blocks (make sure that "ascii" folder exists).
                                                                     "_.............~*,.......................'(;
 #+end_src
 
+
+
+* Words
+
+  #+begin_src text :tangle hel.txt
+
+┬ ┬┌─┐┬  
+├─┤├┤ │  
+┴ ┴└─┘┴─┘
+  #+end_src
+
+  #+begin_src text :tangle lo.txt
+
+┬  ┌─┐
+│  │ │
+┴─┘└─┘
+  #+end_src
+
+  #+begin_src text :tangle smi.txt
+
+┌─┐┌┬┐┬
+└─┐││││
+└─┘┴ ┴┴
+  #+end_src
+
+  #+begin_src text :tangle thers.txt
+
+┌┬┐┬ ┬┌─┐┬─┐┌─┐
+ │ ├─┤├┤ ├┬┘└─┐
+ ┴ ┴ ┴└─┘┴└─└─┘
+  #+end_src
+
+  #+begin_src text :tangle you.txt
+
+┬ ┬┌─┐┬ ┬
+└┬┘│ ││ │
+ ┴ └─┘└─┘
+  #+end_src
+
+  #+begin_src text :tangle re.txt
+
+|┬─┐┌─┐
+ ├┬┘├┤ 
+ ┴└─└─┘
+  #+end_src
+
+  #+begin_src text :tangle qui.txt
+
+┌─┐ ┬ ┬┬
+│─┼┐│ ││
+└─┘└└─┘┴
+  #+end_src
+
+  #+begin_src text :tangle te.txt
+
+┌┬┐┌─┐
+ │ ├┤ 
+ ┴ └─┘
+  #+end_src
+
+  #+begin_src text :tangle go.txt
+
+┌─┐┌─┐
+│ ┬│ │
+└─┘└─┘
+  #+end_src
+
+  #+begin_src text :tangle od.txt
+
+┌─┐┌┬┐
+│ │ ││
+└─┘─┴┘
+  #+end_src
+
+  #+begin_src text :tangle a.txt
+
+┌─┐
+├─┤
+┴ ┴
+  #+end_src
+
+  #+begin_src text :tangle t.txt
+
+┌┬┐
+ │ 
+ ┴
+  #+end_src
+
+  #+begin_src text :tangle turn.txt
+
+┌┬┐┬ ┬┬─┐┌┐┌
+ │ │ │├┬┘│││
+ ┴ └─┘┴└─┘└┘
+  #+end_src
+
+  #+begin_src text :tangle ing.txt
+
+ ┬ ┌┐┌┌─┐
+ │ ││││ ┬
+ ┴─┘└┘└─┘
+  #+end_src  
+
+  #+begin_src text :tangle m.txt
+
+┌┬┐
+│││
+┴ ┴
+  #+end_src
+
+  #+begin_src text :tangle e.txt
+
+┌─┐
+├┤ 
+└─┘
+  #+end_src
+
+  #+begin_src text :tangle o.txt
+
+┌─┐
+│ │
+└─┘
+  #+end_src
+
+  #+begin_src text :tangle n.txt
+
+┌┐┌
+│││
+┘└┘
+  #+end_src
 
 
 * Timings
