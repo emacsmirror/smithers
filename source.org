@@ -918,3 +918,49 @@ Export the tangled blocks (make sure that "ascii" folder exists).
    | Wink      |         |       16 | 213 |
    | Closed    |         |        7 | 220 |
    #+TBLFM: $4=(@-1$4 + $3)
+
+* Window Sizes
+
+  To determine automatic window sizing, we need to observe a few variables 
+
+      | winW | winH | scale | Pad-L | Pad-T |
+      |------+------+-------+-------+-------|
+      |   80 |   53 | -3.29 |     0 |    14 |
+      |  105 |   57 | -2.28 |     5 |     2 |
+      |   42 |   57 | -8.28 |     0 |    60 |
+      |   42 |   18 | -8.28 |     0 |     0 |
+      |   86 |   18 | -8.28 |   100 |     0 |
+      |   75 |   30 | -5.28 |    20 |     0 |
+      |  142 |   53 | -2.28 |    35 |     0 |
+      |  183 |   15 |   -10 |   600 |     0 |
+      |  188 |   55 |    -2 |    70 |     0 |
+
+
+   Below is some code used to fit a regression on the above table to determine resizing factors
+      
+  #+begin_src python
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+tab = pd.DataFrame(data={
+    'gfxW': [160, 160 ,   160 ,   160 ,   160 ,   160 ,   160 , 160 , 160],
+    'gfxH': [72 ,    72 ,    72 ,    72 ,    72 ,    72 ,    72 ,  72 ,  72],
+    'winW': [80 ,   105 ,    42 ,    42 ,    86 ,    75 ,   142 , 183 , 188],
+    'winH':  [53 ,    57 ,    57 ,    18 ,    18 ,    30 ,    53 ,  15 ,  55],
+    'winSc': [-3.29 , -2.28 , -8.28 , -8.28 , -8.28 , -5.28 , -2.28 , -10 ,  -2],
+    'Pad-L': [0 ,     5 ,     0 ,     0 ,   100 ,    20 ,    35 , 600 ,  70],
+    'Pad-T': [14 ,     2 ,    60 ,     0 ,     0 ,     0 ,     0 ,   0 ,   0]})
+
+x = tab[["gfxW","gfxH", "winW", "winH"]]
+y = tab[["winSc","Pad-L", "Pad-T"]]
+
+reg = LinearRegression().fit(x,y)
+
+print(reg.coef_, reg.intercept_)
+
+#winSC = (+ (* 1.33e-17 gfxH) (* 0.014 winW) (* 0.125 winH) -12)
+#padl = (+ (* -8.8e-16 gfxH) (*  2.25 winW) (* -5.84 winH) 87)
+#part = (+ (* -5.5e-17 gfxH) (* -0.178 winW) (* 0.479 winH) 8)
+
+  #+end_src
+  

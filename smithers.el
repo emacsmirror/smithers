@@ -28,8 +28,19 @@
   :type 'integer
   :group 'smithers)
 
+(defcustom smithers-autoscale t
+  "Automatically scale and center the graphics based on buffer dimensions. It attempts to automatically set the  ``smithers-leftpad'', ``smithers-toppad'', ``smithers-scale'' variables. Disable this if you wish to use custom settings."
+  :type 'boolean
+  :group 'smithers)
+
+
 (defcustom smithers-leftpad 50
   "Amount of left-padding to centre the graphics.  Decrease this value if the text is too far to the right."
+  :type 'integer
+  :group 'smithers)
+
+(defcustom smithers-toppad 2
+  "Amount of top-padding to centre the graphics.  Decrease this value if the text is too far down."
   :type 'integer
   :group 'smithers)
 
@@ -139,7 +150,7 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
     ;; Winky wink
     (:ascii winked :duration 16 :text (1 1 nil))
     (:ascii closed :duration 7 :text (1 1 nil)))
-  "Timings, with durations as derived from counting frames from the source video.  The ``smithers-audiodelay' given is designed to overcome any overhead in spawning the media player so that the open mouth ascii syncs with the start of the synthesized speech.")
+  "Timings, with durations as derived from counting frames from the source video.  The ``smithers-audiodelay' given is designed to overcome any overhead in spawning the media player so that the open mouth ascii syncs with the start of the synthesized speech. Text positions are relative to the image root and will be shifted accordingly to frame size if ``smithers-autoscale'' is active.")
 
 ;; --{ Functions }---
 
@@ -230,7 +241,6 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
               (indent-rigidly (point-min) (point-max) lpad))
           (buffer-substring-no-properties (point-min) (point-max))))))
 
-
 (defun smithers--getword (ascii-key)
   "Retrieve the text contents of 'words/ASCII-KEY.txt'."
   (let ((fname (expand-file-name (format "%s.txt" ascii-key) smithers-dirwords)))
@@ -239,31 +249,50 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
           (insert-file-contents fname)
           (buffer-substring-no-properties (point-min) (point-max))))))
 
-(defun smithers--placeword (xytext asciitext)
+(defun smithers--placeword (xytext asciitext lpad tpad)
   "Place text at position and optionally add to active text space.
-Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smithers--activetext''.  The ASCIITEXT provides the actual ascii.  This function could be written a bit cleaner since we don't need the text component, only the ascii."
+Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smithers--activetext''.  The ASCIITEXT provides the actual ascii.  This function could be written a bit cleaner since we don't need the text component, only the ascii. LPAD and TPAD provide top and left padding to compensate for positional changes."
   (with-current-buffer "*smithers*"
     (if (nth 3 xytext)
         (setq smithers--activetext nil))
     (if (nth 2 xytext) ;; a nil value will still render previous words
-        (push (list (nth 0 xytext) (nth 1 xytext) asciitext) smithers--activetext))
-    (artist-mode 1) ;; required for insert to work without artefacts
+        (push (list (+ (nth 0 xytext) (floor (/ lpad 2.5)))
+                    (- (nth 1 xytext) (* 2 tpad))
+                    asciitext)
+              smithers--activetext))
     (dolist (xyt smithers--activetext)
       (let ((left (nth 0 xyt))
             (top (nth 1 xyt))
             (text (nth 2 xyt)))
         (artist-text-insert-common left top text nil)))
-    (artist-mode -1)
     (if (>= (length smithers--activetext) smithers-activetext-limit)
         (setq smithers--activetext (cl-subseq smithers--activetext 0 smithers-activetext-limit)))))
 
+
+(defun smithers--determine-sf (gfxH gfxW)
+  "Determine Size Factors to resize the buffer to fit the graphic.  Coefficients and Intercepts derived by fitting a linear model to window and scale observations recorded in the source org-mode file. The source graphic dimensions GFXW and GFXH (160 and 72) respectively."
+  (with-current-buffer (get-buffer-create "test")
+    (switch-to-buffer "test")
+    (erase-buffer)
+    (toggle-truncate-lines 1)
+    (let ((winW (window-total-width))
+          (winH (window-total-height)))
+      (let ((winSc (+ (* 0.014 winW) (* 0.125 winH) -11))
+            (padl (+ (*  2 winW) (* -5 winH) 4))
+            (padt (+ (* -0.178 winW) (* 0.479 winH) 8)))
+        (let ((fixpadt (if (> padt 0) (floor padt) 0))
+              (fixpadl (if (> padl 0) (floor padl) 0)))
+          (list :sizefactors winSc :padtop fixpadt :padleft fixpadl))))))
+
 ;;;###autoload
-(defun smithers-with-opts (lpad scale fps)
-  "Run ``smithers'' with specific left-padding LPAD, scaling SCALE amount, and frames-per-second FPS.  Useful for testing."
+(defun smithers-with-opts (lpad tpad scale fps)
+  "Run ``smithers'' with specific left-padding LPAD, top-padding TPAD, scaling SCALE amount, and frames-per-second FPS."
   (interactive (list (read-number "Left-Padding: " smithers-leftpad)
+                     (read-number "Top-Padding: " smithers-toppad)
                      (read-number "Scale: " -3.5)
                      (read-number "FPS: " smithers-fps)))
   (let ((cbuff (current-buffer))
+        (top-pad (make-string tpad ?\n))
         (ascii-map (-map (lambda (x) (cons x (smithers--getgraphic x lpad)))
                          '(start0 start1 start2 start3 start4 start5 start6
                                   closed opened winked)))
@@ -272,6 +301,7 @@ Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smit
     (smithers--assertallmedia)
     (with-current-buffer (get-buffer-create "*smithers*")
       (switch-to-buffer "*smithers*")
+      (artist-mode 1) ;; required for insert to work without artefacts
       (setq-local cursor-type nil)
       (buffer-disable-undo)
       (toggle-truncate-lines 1)
@@ -287,9 +317,10 @@ Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smit
           (if espeak (smithers--playwav espeak))
           (when asc-gfx
             (erase-buffer)
-            (insert asc-gfx))
+            (insert top-pad asc-gfx)
+            (goto-char 1))
           (if xytext ;; still render nil text
-              (smithers--placeword xytext asc-wrd))
+              (smithers--placeword xytext asc-wrd lpad tpad)) 
           (if (> (or ticks 0) 0)
               (sit-for (/ (float ticks) fps)))))
       (sit-for (/ (float smithers-enddelay) fps))
@@ -300,8 +331,16 @@ Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smit
 (defun smithers ()
   "A prosaic message of encouragement from an employer to his supplicant.  Or a dispassionate statement of approval from a machine to its user."
   (interactive)
-  (smithers-with-opts smithers-leftpad smithers-scale smithers-fps))
+  (let ((pad-left smithers-leftpad)
+        (pad-top smithers-toppad)
+        (scale smithers-scale))
+    (if smithers-autoscale
+        (let ((x (smithers--determine-sf 160 72)))
+          (setq pad-left (plist-get x :padleft)
+                pad-right (plist-get x :padtop)
+                scale (plist-get x :sizefactors))))
+    (smithers-with-opts pad-left pad-top scale smithers-fps)))
+
 
 (provide 'smithers)
-
 ;;; smithers.el ends here

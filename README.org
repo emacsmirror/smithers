@@ -28,11 +28,21 @@ The audio is generated using [[http://espeak.sourceforge.net/][espeak]] phenomes
 
    The following options below can be customized (the prefix =smithers= has been removed from the varname):
 
+*** Scaling
+
+  | VarName    | Default | Description                                                                                                              |
+  |------------+---------+--------------------------------------------------------------------------------------------------------------------------|
+  | -autoscale |       t | Autoscale graphics by determining leftpad, toppad and scale values automatically. Disable to use the manual values below |
+  | -leftpad   |     100 | Amount of left-padding to apply and better centre the graphics.                                                          |
+  | -toppad    |       2 | Amount top left-padding to apply and better vertical centre the graphics.                                                |
+  | -scale     |    -3.5 | Amount to scale the ascii text. Negative values reduce the size.                                                         |
+
+
+*** General    
+
   | VarName           |   Default | Description                                                                   |
   |-------------------+-----------+-------------------------------------------------------------------------------|
   | -fps              |        25 | Frames per second to scale the duration intervals between each audio/graphic. |
-  | -leftpad          |       100 | Amount of left-padding to apply and better centre the graphics.               |
-  | -scale            |      -3.5 | Amount to scale the ascii text. Negative values reduce the size.              |
   | -audiodelay       |         5 | Number of frames in which to delay rendering if media player is slow.         |
   | -activetext-limit |        50 | Maximum number of text items to render at any given time.                     |
   | -enddelay         |        50 | Number of frames to wait at the end of the animation.                         |
@@ -40,6 +50,7 @@ The audio is generated using [[http://espeak.sourceforge.net/][espeak]] phenomes
   | -dirascii         | "./ascii" | Directory where the ascii are kept.                                           |
   | -dirwavs          |  "./wavs" | Directory where the wavs are kept.                                            |
 
+*** Espeak
 
   The command to change the pitch (-p), speed (-s) and word gap (-g) for the espeak wav file can also be set by changing the variable, and by deleting all the WAVs in the =smithers-dirwavs= folder (which will force a regeneration).
 
