@@ -271,18 +271,14 @@ Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smit
 
 (defun smithers--determine-sf ()
   "Determine Size Factors to resize the buffer to fit the graphic.  Coefficients and Intercepts derived by fitting a linear model to window and scale observations recorded in the source `org-mode' file."
-  (with-current-buffer (get-buffer-create "test")
-    (switch-to-buffer "test")
-    (erase-buffer)
-    (toggle-truncate-lines 1)
-    (let ((winW (window-total-width))
-          (winH (window-total-height)))
-      (let ((winSc (+ (* 0.014 winW) (* 0.125 winH) -11))
-            (padl (+ (*  2 winW) (* -5 winH) 4))
-            (padt (+ (* -0.178 winW) (* 0.479 winH) 8)))
-        (let ((fixpadt (if (> padt 0) (floor padt) 0))
-              (fixpadl (if (> padl 0) (floor padl) 0)))
-          (list :sizefactors winSc :padtop fixpadt :padleft fixpadl))))))
+  (let ((winW (window-total-width))
+        (winH (window-total-height)))
+    (let ((winSc (+ (* 0.014 winW) (* 0.125 winH) -11))
+          (padl (+ (*  2 winW) (* -5 winH) 4))
+          (padt (+ (* -0.178 winW) (* 0.479 winH) 8)))
+      (let ((fixpadt (if (> padt 0) (floor padt) 0))
+            (fixpadl (if (> padl 0) (floor padl) 0)))
+        (list :sizefactors winSc :padtop fixpadt :padleft fixpadl)))))
 
 ;;;###autoload
 (defun smithers-with-opts (lpad tpad scale fps)
