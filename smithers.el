@@ -287,6 +287,7 @@ Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smit
                      (read-number "Top-Padding: " smithers-toppad)
                      (read-number "Scale: " -3.5)
                      (read-number "FPS: " smithers-fps)))
+  (smithers--assertallmedia)
   (let ((cbuff (current-buffer))
         (top-pad (make-string tpad ?\n))
         (ascii-map (-map (lambda (x) (cons x (smithers--getgraphic x lpad)))
@@ -294,7 +295,6 @@ Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smit
                                   closed opened winked)))
         (word-map (-map (lambda (x) (cons x (smithers--getword x)))
                         '(hel lo smi thers you re qui te go od a t turn ing m e o n))))
-    (smithers--assertallmedia)
     (with-current-buffer (get-buffer-create "*smithers*")
       (switch-to-buffer "*smithers*")
       (artist-mode 1) ;; required for insert to work without artefacts
