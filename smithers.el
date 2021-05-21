@@ -176,7 +176,7 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
     (let* ((beg (re-search-forward startheader))
            (end (re-search-forward endheader)))
       (goto-char beg)
-      (while (let* ((xx (org-next-block 1))
+      (while (let* ((_xx (org-next-block 1))
                     (now (point)))
                (and (< now end)
                     (>= now beg)))
