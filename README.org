@@ -4,7 +4,7 @@
 
 Sometimes we all need is a raunchy message of encouragement from our employer.  This is a recreation of Waylon Smithers' [[https://www.youtube.com/watch?v=5xbyJGM1iUY][startup message]] from The Simpsons of Charles Montgomery Burns.
 
-#+HTML: <img src="https://gitlab.com/mtekman/smithers-startup.el/uploads/1ee4c821ea40376180c1c9b5eedf6fb8/output3.gif" />
+#+HTML: <img src="https://gitlab.com/mtekman/smithers.el/uploads/bfdf679d6a000f24128c8edf25ff94d3/output3-min.gif" />
 
 The audio is generated using [[http://espeak.sourceforge.net/][espeak]] phenomes, but it can speak with any audio (official or otherwise) that you feed it.
 

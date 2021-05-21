@@ -6,7 +6,7 @@
 ;; URL: https://gitlab.com/mtekman/smithers.el
 ;; Keywords: games
 ;; Package-Requires: ((emacs "26.1") (dash "2.17.0") (org "9.4.5"))
-;; Version: 0.2
+;; Version: 0.3
 
 ;;; Commentary:
 ;;
