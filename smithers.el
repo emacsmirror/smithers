@@ -29,7 +29,7 @@
   :group 'smithers)
 
 (defcustom smithers-autoscale t
-  "Automatically scale and center the graphics based on buffer dimensions. It attempts to automatically set the  ``smithers-leftpad'', ``smithers-toppad'', ``smithers-scale'' variables. Disable this if you wish to use custom settings."
+  "Automatically scale and center the graphics based on buffer dimensions.  It attempts to automatically set the  ``smithers-leftpad'', ``smithers-toppad'', ``smithers-scale'' variables.  Disable this if you wish to use custom settings."
   :type 'boolean
   :group 'smithers)
 
@@ -70,7 +70,7 @@ This operation is only performed once for each sound key."
   :type 'integer
   :group 'smithers)
 
-(defcustom smithers-enddelay 50
+(defcustom smithers-enddelay 20
   "Number of frames to wait at the end of the animation before killing the '*smithers*' buffer."
   :type 'integer
   :group 'smithers)
@@ -150,7 +150,7 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
     ;; Winky wink
     (:ascii winked :duration 16 :text (1 1 nil))
     (:ascii closed :duration 7 :text (1 1 nil)))
-  "Timings, with durations as derived from counting frames from the source video.  The ``smithers-audiodelay' given is designed to overcome any overhead in spawning the media player so that the open mouth ascii syncs with the start of the synthesized speech. Text positions are relative to the image root and will be shifted accordingly to frame size if ``smithers-autoscale'' is active.")
+  "Timings, with durations as derived from counting frames from the source video.  The ``smithers-audiodelay' given is designed to overcome any overhead in spawning the media player so that the open mouth ascii syncs with the start of the synthesized speech.  Text positions are relative to the image root and will be shifted accordingly to frame size if ``smithers-autoscale'' is active.")
 
 ;; --{ Functions }---
 
@@ -251,7 +251,7 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
 
 (defun smithers--placeword (xytext asciitext lpad tpad)
   "Place text at position and optionally add to active text space.
-Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smithers--activetext''.  The ASCIITEXT provides the actual ascii.  This function could be written a bit cleaner since we don't need the text component, only the ascii. LPAD and TPAD provide top and left padding to compensate for positional changes."
+Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smithers--activetext''.  The ASCIITEXT provides the actual ascii.  This function could be written a bit cleaner since we don't need the text component, only the ascii.  LPAD and TPAD provide top and left padding to compensate for positional changes."
   (with-current-buffer "*smithers*"
     (if (nth 3 xytext)
         (setq smithers--activetext nil))
@@ -269,8 +269,8 @@ Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smit
         (setq smithers--activetext (cl-subseq smithers--activetext 0 smithers-activetext-limit)))))
 
 
-(defun smithers--determine-sf (gfxH gfxW)
-  "Determine Size Factors to resize the buffer to fit the graphic.  Coefficients and Intercepts derived by fitting a linear model to window and scale observations recorded in the source org-mode file. The source graphic dimensions GFXW and GFXH (160 and 72) respectively."
+(defun smithers--determine-sf ()
+  "Determine Size Factors to resize the buffer to fit the graphic.  Coefficients and Intercepts derived by fitting a linear model to window and scale observations recorded in the source `org-mode' file."
   (with-current-buffer (get-buffer-create "test")
     (switch-to-buffer "test")
     (erase-buffer)
@@ -320,7 +320,7 @@ Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smit
             (insert top-pad asc-gfx)
             (goto-char 1))
           (if xytext ;; still render nil text
-              (smithers--placeword xytext asc-wrd lpad tpad)) 
+              (smithers--placeword xytext asc-wrd lpad tpad))
           (if (> (or ticks 0) 0)
               (sit-for (/ (float ticks) fps)))))
       (sit-for (/ (float smithers-enddelay) fps))
@@ -335,9 +335,9 @@ Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smit
         (pad-top smithers-toppad)
         (scale smithers-scale))
     (if smithers-autoscale
-        (let ((x (smithers--determine-sf 160 72)))
+        (let ((x (smithers--determine-sf)))
           (setq pad-left (plist-get x :padleft)
-                pad-right (plist-get x :padtop)
+                pad-top (plist-get x :padtop)
                 scale (plist-get x :sizefactors))))
     (smithers-with-opts pad-left pad-top scale smithers-fps)))
 
