@@ -13,13 +13,22 @@ The audio is generated using [[http://espeak.sourceforge.net/][espeak]] phenomes
    Install directly from MELPA or using =use-package=.
 
   #+begin_src elisp
-(use-package smithers
-  :init
-  ;; Adjust these to better
-  ;; fit your window dimensions
-  (setq smithers-leftpad 20
-        smithers-scale -2.5
-        smithers-fps 25))
+    ;; Vanilla setup
+    (use-package smithers)
+  #+end_src
+
+  Or
+
+  #+begin_src elisp
+    ;; Custom setup
+    (use-package smithers
+      :init
+      ;; Adjust these to better
+      ;; fit your window dimensions
+      (setq smithers-autoscale nil
+            smithers-leftpad 20
+            smithers-scale -2.5
+            smithers-fps 25))
   #+end_src
 
 ** Usage and Customization
