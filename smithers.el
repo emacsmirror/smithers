@@ -148,37 +148,37 @@ espeak, however it can technically use any WAVs you give it."
 Elements are populated by ``smithers--placeword''.")
 
 (defvar smithers--timings
-  `(;; Startup sequence
+  '(;; Startup sequence
     (:ascii start0 :duration 05) (:ascii start1 :duration 02) (:ascii start2 :duration 02)
     (:ascii start3 :duration 02) (:ascii start4 :duration 02) (:ascii start5 :duration 02)
     (:ascii start6 :duration 02)
     ;; Talking Sequence
-    (:ascii closed :duration ,(- 08 smithers-audiodelay))
+    (:ascii closed :duration 08)
     (:espeak hello :duration 10)
     (:ascii opened :duration 11 :text (15 45 hel t))
-    (:ascii closed :duration ,(- 06 smithers-audiodelay) :text (24 45 lo))
-    (:espeak smithers :duration ,smithers-audiodelay)
+    (:ascii closed :duration 06 :text (24 45 lo))
+    (:espeak smithers :duration 0)
     (:ascii opened :duration 10 :text (32 45 smi))
-    (:ascii closed :duration ,(- 16 smithers-audiodelay) :text (39 45 thers))
-    (:espeak youre :duration ,smithers-audiodelay)
+    (:ascii closed :duration 16 :text (39 45 thers))
+    (:espeak youre :duration 0)
     (:ascii opened :duration 06 :text (21 51 you))
-    (:ascii closed :duration ,(- 04 smithers-audiodelay) :text (30 51 re))
-    (:espeak quite :duration ,smithers-audiodelay)
+    (:ascii closed :duration 04 :text (30 51 re))
+    (:espeak quite :duration 0)
     (:ascii opened :duration 06 :text (40 51 qui))
-    (:ascii closed :duration ,(- 06 smithers-audiodelay) :text (48 51 te))
-    (:espeak good :duration ,smithers-audiodelay)
+    (:ascii closed :duration 06 :text (48 51 te))
+    (:espeak good :duration 0)
     (:ascii opened :duration 10 :text (33 57 go))
-    (:ascii closed :duration ,(- 08 smithers-audiodelay) :text (39 57 od))
-    (:espeak at :duration ,smithers-audiodelay)
+    (:ascii closed :duration 08 :text (39 57 od))
+    (:espeak at :duration 0)
     (:ascii opened :duration 08 :text (48 57 a))
-    (:ascii closed :duration ,(- 06 smithers-audiodelay) :text (51 57 t))
-    (:espeak turning :duration ,smithers-audiodelay)
+    (:ascii closed :duration 06 :text (51 57 t))
+    (:espeak turning :duration 0)
     (:ascii opened :duration 11 :text (15 63 turn))
-    (:ascii closed :duration ,(- 06 smithers-audiodelay) :text (27 63 ing))
-    (:espeak me :duration ,smithers-audiodelay)
+    (:ascii closed :duration 06 :text (27 63 ing))
+    (:espeak me :duration 0)
     (:ascii opened :duration 06 :text (39 63 m))
-    (:ascii closed :duration ,(- 06 smithers-audiodelay) :text (42 63 e))
-    (:espeak on :duration ,smithers-audiodelay)
+    (:ascii closed :duration 06 :text (42 63 e))
+    (:espeak on :duration 0)
     (:ascii opened :duration 10 :text (48 63 o))
     (:ascii closed :duration 24 :text (51 63 n))
     ;; Winky wink
@@ -401,8 +401,15 @@ FPS."
             (goto-char 1))
           (if xytext ;; still render nil text
               (smithers--placeword xytext asc-wrd lpad tpad))
-          (if (> (or ticks 0) 0)
+          ;; -- Audio Magic --
+          ;; Subtract audio delay from CLOSED ascii
+          ;; Add audio delay to espeak elements
+          (cond ((eq asc-key 'closed) (setq ticks (- ticks smithers-audiodelay)))
+                (espeak (setq ticks (+ ticks smithers-audiodelay)))
+                (t nil))
+          (if (> (or ticks 0) 0) ;; Wait between frames
               (sit-for (/ (float ticks) fps)))))
+      ;; Wait after animation
       (sit-for (/ (float smithers-enddelay) fps))
       (kill-buffer))
     (switch-to-buffer cbuff)))
