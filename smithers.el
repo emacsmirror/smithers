@@ -88,7 +88,7 @@ This operation is only performed once for each sound key."
   :type 'string
   :group 'smithers)
 
-(defcustom smithers-audiodelay 5
+(defcustom smithers-audiodelay 3
   "The number of frames in which to delay the ascii rendering.
 
 Due to the media player being slow to spawn, this value is
