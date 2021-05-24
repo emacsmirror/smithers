@@ -111,7 +111,7 @@ non-zero.  If the audio feels delayed, increase this value."
   "Directory where smithers is installed.")
 
 (defvar smithers-dirdata
-  (expand-file-name "data" smithers-dir)
+  (expand-file-name "smithers-data" package-user-dir)
   "Directory where smithers data directory is.")
 
 (defcustom smithers-dirgraphics
