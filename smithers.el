@@ -9,19 +9,19 @@
 ;; Version: 0.3
 
 ;;; License:
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation, either version 3 of the
+;; License, or (at your option) any later version.
 ;;
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
-;;
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
+;; This program is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
 
 ;;; Commentary:
-;;
+
 ;; Sometimes we all need a message of encouragement from our sexy
 ;; employer.  This is a recreation of Waylon Smithers' startup message
 ;; from the The Simpsons of Charles Montgomery Burns.
@@ -36,33 +36,49 @@
   :group 'emacs)
 
 (defcustom smithers-fps 25
-  "Frames per second to scale the duration intervals given in the ``smithers--timings''."
+  "Frames-per-second for the animation.
+
+The frames-per-second to scale the duration intervals given in
+the ``smithers--timings'' variable.  This may not actually
+correspond to the true FPS, but the original DURATION values
+given in the timings were derived from a 25fps video."
   :type 'integer
   :group 'smithers)
 
 (defcustom smithers-autoscale t
-  "Automatically scale and center the graphics based on buffer dimensions.  It attempts to automatically set the  ``smithers-leftpad'', ``smithers-toppad'', ``smithers-scale'' variables.  Disable this if you wish to use custom settings."
+  "Automatically scale and center the graphics based on buffer dimensions.
+
+It attempts to automatically set the ``smithers-leftpad'',
+``smithers-toppad'', ``smithers-scale'' variables.  Disable this
+if you wish to use custom settings."
   :type 'boolean
   :group 'smithers)
 
 
 (defcustom smithers-leftpad 50
-  "Amount of left-padding to centre the graphics.  Decrease this value if the text is too far to the right."
+  "Amount of left-padding to centre the graphics.
+
+Decrease this value if the text is too far to the right."
   :type 'integer
   :group 'smithers)
 
 (defcustom smithers-toppad 2
-  "Amount of top-padding to centre the graphics.  Decrease this value if the text is too far down."
+  "Amount of top-padding to centre the graphics.
+
+Decrease this value if the text is too far down."
   :type 'integer
   :group 'smithers)
 
 (defcustom smithers-scale -3.5
-  "Amount to scale the text in the '*smithers*' buffer.  Negative values reduce the size."
+  "Amount to scale the text in the '*smithers*' buffer.
+
+Negative values reduce the size."
   :type 'integer
   :group 'smithers)
 
 (defcustom smithers-espeakcomm "espeak -ven-us+m5 -p 80 -s 170 -g 10"
   "Command used to generate WAVs in the ``smithers-dirwavs'' directory.
+
 This operation is only performed once for each sound key."
   :type 'string
   :group 'smithers)
@@ -73,7 +89,10 @@ This operation is only performed once for each sound key."
   :group 'smithers)
 
 (defcustom smithers-audiodelay 5
-  "The number of frames in which to delay the ascii rendering due to the media player being slow to spawn.  If the audio feels delayed, increase this value."
+  "The number of frames in which to delay the ascii rendering.
+
+Due to the media player being slow to spawn, this value is
+non-zero.  If the audio feels delayed, increase this value."
   :type 'integer
   :group 'smithers)
 
@@ -83,13 +102,13 @@ This operation is only performed once for each sound key."
   :group 'smithers)
 
 (defcustom smithers-enddelay 20
-  "Number of frames to wait at the end of the animation before killing the '*smithers*' buffer."
+  "Number of frames to wait at the end of the animation."
   :type 'integer
   :group 'smithers)
 
 (defvar smithers-dir
   (expand-file-name "smithers" package-user-dir)
-  "Directory where smimthers is installed.")
+  "Directory where smithers is installed.")
 
 (defvar smithers-dirdata
   (expand-file-name "data" smithers-dir)
@@ -106,7 +125,8 @@ This operation is only performed once for each sound key."
   "The directory of WAVs containing the necessary files:
 {hello,smithers,youre,quite,good,at,turning,me,on}.wav
 
-Due to copyright infringement, all WAVs were generated using espeak, however it can technically use any WAVs you give it."
+Due to copyright infringement, all WAVs were generated using
+espeak, however it can technically use any WAVs you give it."
   :type 'directory
   :group 'smithers)
 
@@ -123,7 +143,9 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
   "Alist of sound keys and their phenomes.")
 
 (defvar smithers--activetext nil
-  "List of text to render in the next frame.  Elements are pushed from ``smithers--placeword''.")
+  "List of text to render in the next frame.
+
+Elements are populated by ``smithers--placeword''.")
 
 (defvar smithers--timings
   `(;; Startup sequence
@@ -162,18 +184,27 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
     ;; Winky wink
     (:ascii winked :duration 16 :text (1 1 nil))
     (:ascii closed :duration 7 :text (1 1 nil)))
-  "Timings, with durations as derived from counting frames from the source video.  The ``smithers-audiodelay' given is designed to overcome any overhead in spawning the media player so that the open mouth ascii syncs with the start of the synthesized speech.  Text positions are relative to the image root and will be shifted accordingly to frame size if ``smithers-autoscale'' is active.")
+  "Animation timings, with durations as frames from the source video.
+
+The ``smithers-audiodelay' given is designed to overcome any
+overhead in spawning the media player so that the open mouth
+ascii syncs with the start of the synthesized speech.  Text
+positions are relative to the image root and will be shifted
+accordingly to frame size if ``smithers-autoscale'' is active.")
 
 ;; --{ Functions }---
 
 (defun smithers--checktestfile (test-file test-dir typetext)
-  "Check that TEST-FILE exists, and if not offer to regenerate it (and others) in TEST-DIR, mentioning TYPETEXT."
+  "Regenerate files of TYPETEXT in TEST-DIR directory.
+
+If TEST-FILE (and others) in TEST-DIR do not exist, prompt to
+regenerate the contents."
   (and (not (file-exists-p (expand-file-name test-file test-dir)))
        (y-or-n-p (format "Could not find %s in '%s', regenerate? "
                          typetext test-dir))))
 
 (defun smithers--findsourcefile ()
-  "Find the source.org file for generating ASCII."
+  "Find the source smithers `org-mode' file for generating ASCII."
   (let* ((source-org-file1 (expand-file-name "source.org" smithers-dir))
          (source-org-file2 (expand-file-name "source.org")))
     (cond ((file-exists-p source-org-file1) source-org-file1)
@@ -181,7 +212,10 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
           (t (error "Could not find 'source.org' to generate ascii")))))
 
 (defun smithers--tangleblocks (startheader endheader directory)
-  "Tangle blocks from source `org-mode' file between STARTHEADER and ENDHEADER, and prepend tangle blocks with DIRECTORY."
+  "Export content from source smithers `org-mode' file between headers.
+
+Tangle blocks from source `org-mode' file between STARTHEADER and
+ENDHEADER, and prepend tangle blocks with DIRECTORY."
   (with-current-buffer (find-file (smithers--findsourcefile))
     (goto-char 1)
     (setq-local org-src-preserve-indentation t)
@@ -202,21 +236,30 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
     (kill-buffer)))
 
 (defun smithers--assert-graphics (&optional overwrite)
-  "Assert that directory for ascii graphics exists, and if not create and populate it.  If OVERWRITE is t, then overwrite."
+  "Assert ASCII graphics exist.
+
+Assert that directory of ASCII graphics exists, and if not create
+and populate it.  If OVERWRITE is t, then overwrite."
   (when (or overwrite (smithers--checktestfile "opened.txt" smithers-dirgraphics "ASCII graphics"))
     (mkdir smithers-dirgraphics t)
     (smithers--tangleblocks "^* Graphics" "^* Words" smithers-dirgraphics)
     (message "Graphics generated.")))
 
 (defun smithers--assert-words (&optional overwrite)
-  "Assert that directory for ascii words exists, and if not create and populate it.  If OVERWRITE is t, then overwrite."
+  "Assert ASCII words exist.
+
+Assert that directory of ASCII words exists, and if not create
+and populate it.  If OVERWRITE is t, then overwrite."
   (when (or overwrite (smithers--checktestfile "a.txt" smithers-dirwords "ASCII words"))
     (mkdir smithers-dirwords t)
     (smithers--tangleblocks "^* Words" "^* Timings" smithers-dirwords)
     (message "Words generated.")))
 
 (defun smithers--assert-wavs (&optional overwrite)
-  "Assert that directory for wavs exists, and if not create and populate it.  If OVERWRITE is t, then overwrite."
+  "Assert that espeak WAVs exist.
+
+Assert that directory for WAVs exists, and if not create and
+populate it.  If OVERWRITE is t, then overwrite."
   (when (or overwrite (smithers--checktestfile "hello.wav" smithers-dirwavs "WAVs"))
     (mkdir smithers-dirwavs t)
     (dolist (speech (--filter (plist-get it :espeak) smithers--timings))
@@ -228,7 +271,11 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
     (message "Regenerating WAVs")))
 
 (defun smithers--assertallmedia (&optional doit)
-  "Detect if this is the first time that ``smithers'' has been run.  If so, regenerate everything, otherwise partially.  The DOIT option force all regeneration."
+  "Assert all ASCII and WAV media are present and accessible.
+
+Detect if this is the first time that ``smithers'' has been run.
+If so, regenerate everything, otherwise partially.  The DOIT
+option forces all regeneration."
   (save-excursion
     (let ((genall (or doit (not (file-exists-p smithers-dirdata)))))
       (smithers--assert-graphics genall)
@@ -236,15 +283,22 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
       (smithers--assert-wavs genall))))
 
 (defun smithers--playwav (speechkey)
-  "Asynchronously play WAV file associated with SPEECHKEY, and error out if not present."
+  "Play WAV file associated with SPEECHKEY.
+
+Asynchronously play WAV file associated with SPEECHKEY, and error
+out if not present."
   (call-process-shell-command
    (format "%s '%s'"
-           smithers-mediaplaycomm (expand-file-name (format "%s.wav" speechkey)
-                                                    smithers-dirwavs))
+           smithers-mediaplaycomm
+           (expand-file-name (format "%s.wav" speechkey)
+                             smithers-dirwavs))
    nil 0))
 
 (defun smithers--getgraphic (ascii-key &optional lpad)
-  "Retrieve the text contents of 'graphics/ASCII-KEY.txt' and left-pad by LPAD amount."
+  "Retrieve ASCII graphic associated with ASCII-KEY.
+
+Get the text contents of 'graphics/ASCII-KEY.txt' and left-pad it
+by LPAD amount."
   (let ((fname (expand-file-name (format "%s.txt" ascii-key) smithers-dirgraphics)))
     (if (file-exists-p fname)
         (with-temp-buffer
@@ -254,7 +308,9 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
           (buffer-substring-no-properties (point-min) (point-max))))))
 
 (defun smithers--getword (ascii-key)
-  "Retrieve the text contents of 'words/ASCII-KEY.txt'."
+  "Retrieve the ASCII word associated with ASCII-KEY.
+
+Get text contents of 'words/ASCII-KEY.txt'."
   (let ((fname (expand-file-name (format "%s.txt" ascii-key) smithers-dirwords)))
     (if (file-exists-p fname)
         (with-temp-buffer
@@ -262,8 +318,14 @@ Due to copyright infringement, all WAVs were generated using espeak, however it 
           (buffer-substring-no-properties (point-min) (point-max))))))
 
 (defun smithers--placeword (xytext asciitext lpad tpad)
-  "Place text at position and optionally add to active text space.
-Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smithers--activetext''.  The ASCIITEXT provides the actual ascii.  This function could be written a bit cleaner since we don't need the text component, only the ascii.  LPAD and TPAD provide top and left padding to compensate for positional changes."
+  "Place ASCII word at position and offset it by LPAD and TPAD.
+
+Options given in XYTEXT made up of (x y text clear) where clear
+wipes the ``smithers--activetext''.  The ASCIITEXT provides the
+actual ascii.  This function could be written a bit cleaner since
+we don't need the text component, only the ascii.  LPAD and TPAD
+provide top and left padding to compensate for positional
+changes."
   (with-current-buffer "*smithers*"
     (if (nth 3 xytext)
         (setq smithers--activetext nil))
@@ -282,7 +344,13 @@ Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smit
 
 
 (defun smithers--determine-sf ()
-  "Determine Size Factors to resize the buffer to fit the graphic.  Coefficients and Intercepts derived by fitting a linear model to window and scale observations recorded in the source `org-mode' file."
+  "Determine size factors needed to resize the buffer to fit the graphic.
+
+Coefficients and Intercepts were derived by fitting a linear
+model to window and scale observations recorded in the source
+`org-mode' file.  The values returned correspond to new
+``smithers-scale'', ``smithers-leftpad'', and ``smithers-toppad''
+values."
   (let ((winW (window-total-width))
         (winH (window-total-height)))
     (let ((winSc (+ (* 0.014 winW) (* 0.125 winH) -11))
@@ -294,7 +362,11 @@ Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smit
 
 ;;;###autoload
 (defun smithers-with-opts (lpad tpad scale fps)
-  "Run ``smithers'' with specific left-padding LPAD, top-padding TPAD, scaling SCALE amount, and frames-per-second FPS."
+  "Run smithers with size options.
+
+Run the smithers prompt with specific left-padding LPAD,
+top-padding TPAD, scaling SCALE amount, and frames-per-second
+FPS."
   (interactive (list (read-number "Left-Padding: " smithers-leftpad)
                      (read-number "Top-Padding: " smithers-toppad)
                      (read-number "Scale: " -3.5)
@@ -337,7 +409,9 @@ Options given in XYTEXT made up of (x y text clear) where clear wipes the ``smit
 
 ;;;###autoload
 (defun smithers ()
-  "A prosaic message of encouragement from an employer to his supplicant.  Or a dispassionate statement of approval from a machine to its user."
+  "A prosaic message of encouragement from an employer to his supplicant.
+
+Or a dispassionate statement of fact from a machine to its user."
   (interactive)
   (let ((pad-left smithers-leftpad)
         (pad-top smithers-toppad)
