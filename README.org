@@ -33,7 +33,9 @@ The audio is generated using [[http://espeak.sourceforge.net/][espeak]] phenomes
 
 ** Usage and Customization
 
-   Run =smithers=, or =smithers-with-opts= to better tailor your window dimensions
+   Run =smithers=, or =smithers-with-opts= to better tailor to your window dimensions.
+
+   Espeak must be installed, and a media player that can play WAV files (=mpv= by default.)
 
    The following options below can be customized (the prefix =smithers= has been removed from the varname):
 
@@ -42,9 +44,9 @@ The audio is generated using [[http://espeak.sourceforge.net/][espeak]] phenomes
   | VarName    | Default | Description                                                                                                              |
   |------------+---------+--------------------------------------------------------------------------------------------------------------------------|
   | -autoscale |       t | Autoscale graphics by determining leftpad, toppad and scale values automatically. Disable to use the manual values below |
-  | -leftpad   |     100 | Amount of left-padding to apply and better centre the graphics.                                                          |
-  | -toppad    |       2 | Amount top left-padding to apply and better vertical centre the graphics.                                                |
-  | -scale     |    -3.5 | Amount to scale the ascii text. Negative values reduce the size.                                                         |
+  | -leftpad   |     50 | Amount of manual left-padding to apply and better centre the graphics.                                                          |
+  | -toppad    |       2 | Amount of manual top left-padding to apply and better vertical centre the graphics.                                                |
+  | -scale     |    -3.5 | Amount to manually scale the ascii text. Negative values reduce the size.                                                         |
 
 
 *** General    
@@ -56,8 +58,18 @@ The audio is generated using [[http://espeak.sourceforge.net/][espeak]] phenomes
   | -activetext-limit |        50 | Maximum number of text items to render at any given time.                     |
   | -enddelay         |        50 | Number of frames to wait at the end of the animation.                         |
   | -mediaplaycomm    |     "mpv" | Media player command used to play WAVs.                                       |
+
+*** Directories
+
+  All ASCII graphics and words, as well as the sound WAVs are stored in the =elpa/smithers-data= root folder, with the relative subdirectories given below.
+
+  | VarName           |   Default | Description                                                                   |
+  |-------------------+-----------+-------------------------------------------------------------------------------|
   | -dirascii         | "./ascii" | Directory where the ascii are kept.                                           |
-  | -dirwavs          |  "./wavs" | Directory where the wavs are kept.                                            |
+  | -dirwavs          | "./wavs"  | Directory where the wavs are kept.                                            |
+  | -dirwords         | "./words" | Directory where the wavs are kept.                                            |
+
+  However if one wishes to change the audio or graphics sources, then one only needs to point to a new directory which contains a new set of (identically named) files.
 
 *** Espeak
 
