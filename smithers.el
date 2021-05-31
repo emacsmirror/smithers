@@ -107,7 +107,8 @@ non-zero.  If the audio feels delayed, increase this value."
   :group 'smithers)
 
 (defvar smithers-dir
-  (expand-file-name "smithers" package-user-dir)
+  (car (file-expand-wildcards
+        (expand-file-name "smithers-20*" package-user-dir) t))
   "Directory where smithers is installed.")
 
 (defvar smithers-dirdata
