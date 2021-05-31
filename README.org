@@ -1,6 +1,6 @@
 #+TITLE: smithers.el
 
-#+HTML: <a href="https://melpa.org/#/smithers"><img src="https://melpa.org/packages/smithers.svg"></a>
+#+HTML: <a href="https://melpa.org/#/smithers"><img src="https://melpa.org/packages/smithers-badge.svg"></a>
 
 Sometimes we all need is a raunchy message of encouragement from our employer.  This is a recreation of Waylon Smithers' [[https://www.youtube.com/watch?v=5xbyJGM1iUY][startup message]] from The Simpsons of Charles Montgomery Burns.
 
@@ -14,7 +14,8 @@ The audio is generated using [[http://espeak.sourceforge.net/][espeak]] phenomes
 
   #+begin_src elisp
     ;; Vanilla setup
-    (use-package smithers)
+    (use-package smithers
+       :ensure t)
   #+end_src
 
   Or
@@ -22,6 +23,7 @@ The audio is generated using [[http://espeak.sourceforge.net/][espeak]] phenomes
   #+begin_src elisp
     ;; Custom setup
     (use-package smithers
+      :ensure t
       :init
       ;; Adjust these to better
       ;; fit your window dimensions
